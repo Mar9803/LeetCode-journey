@@ -17,4 +17,8 @@ My Personal LeetCode log — auto-synced with LeetHub.
 |  |
 | ------- |
 | [2116-count-number-of-pairs-with-absolute-difference-k](https://github.com/Mar9803/LeetCode-journey/tree/master/2116-count-number-of-pairs-with-absolute-difference-k) |
+## Database
+|  |
+| ------- |
+| [1757-recyclable-and-low-fat-products](https://github.com/Mar9803/LeetCode-journey/tree/master/1757-recyclable-and-low-fat-products) |
 <!---LeetCode Topics End-->
