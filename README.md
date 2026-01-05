@@ -12,6 +12,7 @@ My Personal LeetCode log — auto-synced with LeetHub.
 |  |
 | ------- |
 | [0001-two-sum](https://github.com/Mar9803/LeetCode-journey/tree/master/0001-two-sum) |
+| [0003-longest-substring-without-repeating-characters](https://github.com/Mar9803/LeetCode-journey/tree/master/0003-longest-substring-without-repeating-characters) |
 | [2116-count-number-of-pairs-with-absolute-difference-k](https://github.com/Mar9803/LeetCode-journey/tree/master/2116-count-number-of-pairs-with-absolute-difference-k) |
 ## Counting
 |  |
@@ -27,4 +28,12 @@ My Personal LeetCode log — auto-synced with LeetHub.
 | [1378-replace-employee-id-with-the-unique-identifier](https://github.com/Mar9803/LeetCode-journey/tree/master/1378-replace-employee-id-with-the-unique-identifier) |
 | [1683-invalid-tweets](https://github.com/Mar9803/LeetCode-journey/tree/master/1683-invalid-tweets) |
 | [1757-recyclable-and-low-fat-products](https://github.com/Mar9803/LeetCode-journey/tree/master/1757-recyclable-and-low-fat-products) |
+## String
+|  |
+| ------- |
+| [0003-longest-substring-without-repeating-characters](https://github.com/Mar9803/LeetCode-journey/tree/master/0003-longest-substring-without-repeating-characters) |
+## Sliding Window
+|  |
+| ------- |
+| [0003-longest-substring-without-repeating-characters](https://github.com/Mar9803/LeetCode-journey/tree/master/0003-longest-substring-without-repeating-characters) |
 <!---LeetCode Topics End-->
