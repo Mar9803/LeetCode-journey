@@ -4,11 +4,12 @@ class Solution {
 
     public int lengthOfLongestSubstring(String s) {
 
-         Map<Character, Integer> last = new HashMap<>();
+        Map<Character, Integer> last = new HashMap<>();
         int max = 0;
         int start = 0;
 
         for (int i = 0; i < s.length(); i++) {
+            
             char c = s.charAt(i);
 
             if (last.containsKey(c) && last.get(c) >= start) {
