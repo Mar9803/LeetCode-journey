@@ -7,6 +7,7 @@ My Personal LeetCode log — auto-synced with LeetHub.
 |  |
 | ------- |
 | [0001-two-sum](https://github.com/Mar9803/LeetCode-journey/tree/master/0001-two-sum) |
+| [0004-median-of-two-sorted-arrays](https://github.com/Mar9803/LeetCode-journey/tree/master/0004-median-of-two-sorted-arrays) |
 | [2116-count-number-of-pairs-with-absolute-difference-k](https://github.com/Mar9803/LeetCode-journey/tree/master/2116-count-number-of-pairs-with-absolute-difference-k) |
 ## Hash Table
 |  |
@@ -36,4 +37,12 @@ My Personal LeetCode log — auto-synced with LeetHub.
 |  |
 | ------- |
 | [0003-longest-substring-without-repeating-characters](https://github.com/Mar9803/LeetCode-journey/tree/master/0003-longest-substring-without-repeating-characters) |
+## Binary Search
+|  |
+| ------- |
+| [0004-median-of-two-sorted-arrays](https://github.com/Mar9803/LeetCode-journey/tree/master/0004-median-of-two-sorted-arrays) |
+## Divide and Conquer
+|  |
+| ------- |
+| [0004-median-of-two-sorted-arrays](https://github.com/Mar9803/LeetCode-journey/tree/master/0004-median-of-two-sorted-arrays) |
 <!---LeetCode Topics End-->
