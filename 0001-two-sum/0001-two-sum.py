@@ -18,4 +18,4 @@ class Solution:
             # così i numeri successivi potranno "fare la query" su di lui
             db_index[num] = i
             
-        return [] # Caso limite
+        return [] 
