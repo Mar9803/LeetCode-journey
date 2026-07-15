@@ -711,3 +711,100 @@ GROUP BY num;
 - Usa le parentesi quando combini molti `AND` e `OR`.
 - Mantieni coerente l'`ORDER BY` in tutte le Window Functions della stessa query.
 - Per trovare sequenze consecutive pensa prima al pattern più adatto: **Islands & Gaps** oppure **Triplette Consecutive**.
+
+
+# Pattern: Aggregazione Condizionale
+
+## Quando usarlo
+
+Quando devi calcolare **più metriche sullo stesso gruppo** (conteggi, somme, KPI) senza eseguire query separate.
+
+Esempi tipici:
+
+- dashboard
+- report mensili
+- analytics
+- fraud detection
+
+---
+
+## Funzioni coinvolte
+
+- `GROUP BY`
+- `CASE WHEN`
+- `COUNT()`
+- `SUM()`
+- `DATE_FORMAT()` *(MySQL)* / `TO_CHAR()` *(PostgreSQL)* *(se serve un raggruppamento temporale)*
+
+---
+
+## Schema mentale
+
+```text
+Pulizia dati (opzionale)
+
+↓
+
+GROUP BY
+
+↓
+
+CASE WHEN
+
+↓
+
+COUNT() / SUM()
+
+↓
+
+Report finale
+```
+
+---
+
+## Sintassi
+
+### Conteggio condizionale
+
+```sql
+COUNT(
+    CASE
+        WHEN condizione
+        THEN 1
+    END
+)
+```
+
+oppure
+
+```sql
+SUM(
+    CASE
+        WHEN condizione
+        THEN 1
+        ELSE 0
+    END
+)
+```
+
+---
+
+### Somma condizionale
+
+```sql
+SUM(
+    CASE
+        WHEN condizione
+        THEN importo
+        ELSE 0
+    END
+)
+```
+
+---
+
+## ⚠️ Attenzione
+
+- `COUNT()` conta tutti i valori **non NULL** (anche `0`).
+- Per sommare importi usa sempre `SUM()`, non `COUNT()`.
+- Se devi raggruppare per mese, normalizza prima la data con `DATE_FORMAT()` o `TO_CHAR()`.
