@@ -1,6 +1,6 @@
 # 📚 SQL Cheat Sheet – Window Functions & Pattern Avanzati
 
-Questo documento raccoglie i costrutti SQL più importanti emersi durante la risoluzione degli esercizi **LeetCode** 
+Questo documento raccoglie i costrutti SQL più importanti emersi durante la risoluzione degli esercizi **LeetCode SQL**.
 
 ---
 
@@ -96,35 +96,40 @@ HAVING COUNT(*) >= 3;
 
 ## Differenza
 
-`WHERE`
+```
+WHERE
 
 ↓
 
-filtra le righe
+Filtra le righe
+```
 
-`HAVING`
+```
+HAVING
 
 ↓
 
-filtra i gruppi
+Filtra i gruppi
+```
 
 ---
 
 # 🪟 Window Functions
 
-Le Window Functions calcolano valori senza perdere le righe originali.
+Le Window Functions calcolano valori mantenendo tutte le righe originali.
 
 Sintassi generale:
 
 ```sql
-funzione() OVER(...)
+funzione()
+OVER(...)
 ```
 
 ---
 
 # ORDER BY dentro OVER
 
-Serve a definire l'ordine della finestra.
+Definisce l'ordine con cui la Window Function scorre le righe.
 
 ```sql
 SUM(amount)
@@ -170,11 +175,9 @@ Significa:
 6 righe precedenti
 +
 riga corrente
-```
 
-Totale:
+=
 
-```
 7 righe
 ```
 
@@ -230,16 +233,16 @@ OVER(
 
 # LAG()
 
-Legge la riga precedente.
+Legge una riga precedente.
 
 ```sql
-LAG(num)
+LAG(colonna)
 OVER(
     ORDER BY id
 )
 ```
 
-Esempio
+## Esempio
 
 | id | num | lag |
 |----|-----|-----|
@@ -248,7 +251,81 @@ Esempio
 |3|2|1|
 |4|2|2|
 
-Serve per confrontare righe consecutive.
+Serve per confrontare la riga corrente con una precedente.
+
+---
+
+# LEAD()
+
+Legge una riga successiva.
+
+```sql
+LEAD(colonna)
+OVER(
+    ORDER BY id
+)
+```
+
+## Esempio
+
+| id | people | lead |
+|----|--------|------|
+|1|120|150|
+|2|150|80|
+|3|80|200|
+|4|200|NULL|
+
+Serve per confrontare la riga corrente con una successiva.
+
+---
+
+# Offset in LAG() e LEAD()
+
+Per default entrambe lavorano con offset = 1.
+
+È possibile specificarne uno diverso.
+
+```sql
+LAG(id,2)
+OVER(
+    ORDER BY id
+)
+```
+
+```sql
+LEAD(id,2)
+OVER(
+    ORDER BY id
+)
+```
+
+Significato:
+
+```
+offset = 1
+
+↓
+
+riga precedente/successiva
+```
+
+```
+offset = 2
+
+↓
+
+due righe prima/dopo
+```
+
+```
+offset = 3
+
+↓
+
+tre righe prima/dopo
+```
+
+Questo evita di dover concatenare molte Window Functions.
 
 ---
 
@@ -284,7 +361,7 @@ Perfetto per:
 
 # CASE WHEN
 
-L'equivalente di un if.
+L'equivalente di un `if`.
 
 ```sql
 CASE
@@ -309,16 +386,6 @@ OVER(
 )
 ```
 
-Output
-
-```
-5
-8
-15
-20
-...
-```
-
 ---
 
 # Pattern: Moving Window
@@ -328,9 +395,9 @@ Finestra mobile.
 ```sql
 SUM(amount)
 OVER(
-ORDER BY data
-ROWS BETWEEN 6 PRECEDING
-AND CURRENT ROW
+    ORDER BY data
+    ROWS BETWEEN 6 PRECEDING
+    AND CURRENT ROW
 )
 ```
 
@@ -346,7 +413,7 @@ Usi tipici
 
 Serve a trovare sequenze consecutive.
 
-Schema mentale:
+Schema mentale
 
 ```
 LAG()
@@ -380,9 +447,59 @@ HAVING
 
 ---
 
-# Ordine di esecuzione SQL
+# Pattern: Triplette Consecutive
 
-Da ricordare sempre.
+Quando il problema richiede almeno **3 elementi consecutivi**, non sempre serve usare Islands & Gaps.
+
+Basta verificare le tre possibili posizioni della riga corrente.
+
+Scenario A
+
+```
+Corrente
+
+↓
+
+Successiva
+
+↓
+
+Successiva
+```
+
+Scenario B
+
+```
+Precedente
+
+↓
+
+Corrente
+
+↓
+
+Successiva
+```
+
+Scenario C
+
+```
+Precedente
+
+↓
+
+Precedente
+
+↓
+
+Corrente
+```
+
+Se almeno uno scenario è valido, la riga appartiene a una sequenza consecutiva.
+
+---
+
+# Ordine di esecuzione SQL
 
 ```
 FROM
@@ -416,7 +533,7 @@ ORDER BY
 LIMIT
 ```
 
-Per questo motivo non puoi scrivere:
+Per questo motivo non puoi scrivere
 
 ```sql
 WHERE ROW_NUMBER() > 5
@@ -424,7 +541,100 @@ WHERE ROW_NUMBER() > 5
 
 nella stessa query.
 
-Bisogna usare una CTE o una subquery.
+Serve una CTE o una subquery.
+
+---
+
+# Calcola prima, filtra dopo
+
+Le Window Functions lavorano sul dataset corrente.
+
+❌
+
+```sql
+WHERE people >= 100
+
+↓
+
+LAG()
+
+↓
+
+LEAD()
+```
+
+Il filtro modifica il contesto e può rompere la consecutività.
+
+✔️
+
+```sql
+LAG()
+
+↓
+
+LEAD()
+
+↓
+
+WHERE
+```
+
+Prima si calcola il contesto.
+
+Poi si filtrano i risultati.
+
+---
+
+# Precedenza degli operatori logici
+
+Ordine di priorità:
+
+```
+NOT
+
+↓
+
+AND
+
+↓
+
+OR
+```
+
+Quando si combinano molti scenari è buona norma usare sempre le parentesi.
+
+```sql
+(
+    Scenario A
+)
+OR
+(
+    Scenario B
+)
+OR
+(
+    Scenario C
+)
+```
+
+---
+
+# Coerenza dell'ORDER BY
+
+Quando utilizzi più Window Functions nella stessa query, usa sempre lo stesso criterio di ordinamento.
+
+```sql
+LAG(id)
+OVER(ORDER BY id)
+
+LEAD(id)
+OVER(ORDER BY id)
+
+ROW_NUMBER()
+OVER(ORDER BY id)
+```
+
+Così tutte le funzioni fanno riferimento allo stesso ordine logico.
 
 ---
 
@@ -441,8 +651,6 @@ COUNT(*)
 FROM table
 GROUP BY num;
 ```
-
-Perché `id` non è aggregato.
 
 ✔️
 
@@ -474,13 +682,15 @@ GROUP BY num;
 | Filtrare gruppi | `HAVING` |
 | Tabella temporanea | `WITH` |
 | Confrontare con la riga precedente | `LAG()` |
+| Confrontare con la riga successiva | `LEAD()` |
 | Numerare righe | `ROW_NUMBER()` |
 | Somma progressiva | `SUM() OVER()` |
 | Media mobile | `AVG() OVER()` |
 | Finestra temporale | `ROWS BETWEEN` |
 | Dividere dati in partizioni | `PARTITION BY` |
 | Logica condizionale | `CASE WHEN` |
-| Sequenze consecutive | Pattern **Islands & Gaps** |
+| Sequenze consecutive lunghe | Pattern **Islands & Gaps** |
+| Sequenze di almeno 3 elementi | Pattern **Triplette Consecutive** |
 
 ---
 
@@ -491,9 +701,13 @@ GROUP BY num;
 - `GROUP BY` riduce il numero di righe.
 - `HAVING` lavora sui gruppi.
 - `WHERE` lavora sulle righe.
-- `LAG()` permette di confrontare una riga con la precedente.
+- `LAG()` guarda indietro.
+- `LEAD()` guarda avanti.
+- `LAG()` e `LEAD()` possono usare un offset (`2`, `3`, ...).
 - `ROWS BETWEEN` definisce una finestra mobile.
 - `SUM() OVER()` crea una somma cumulativa.
 - `ROW_NUMBER()` assegna un indice progressivo.
-- Per trovare sequenze consecutive pensa subito al pattern **Islands & Gaps**.
-```
+- Calcola sempre le Window Functions prima di filtrare i dati.
+- Usa le parentesi quando combini molti `AND` e `OR`.
+- Mantieni coerente l'`ORDER BY` in tutte le Window Functions della stessa query.
+- Per trovare sequenze consecutive pensa prima al pattern più adatto: **Islands & Gaps** oppure **Triplette Consecutive**.
