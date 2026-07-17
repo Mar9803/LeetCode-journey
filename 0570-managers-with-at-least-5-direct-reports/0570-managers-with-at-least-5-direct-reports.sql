@@ -1,9 +1,10 @@
-WITH find_manager AS(
-SELECT COUNT(*) AS cont, managerId
-FROM Employee
-GROUP BY managerId
-HAVING COUNT(*) >= 5
+WITH extract AS (
+    SELECT e1.id, e1.name AS name, COUNT(e2.id) as cont  -- Conta gli ID dei sottoposti
+    FROM Employee e1
+    INNER JOIN Employee e2
+        ON e1.id = e2.managerId
+    GROUP BY e1.id, e1.name
+    HAVING cont >= 5
 )
 SELECT name
-FROM Employee
-WHERE id IN (SELECT managerId FROM find_manager)
+FROM extract;
