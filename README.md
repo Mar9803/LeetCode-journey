@@ -39,6 +39,7 @@ My Personal LeetCode log — auto-synced with LeetHub.
 | [1068-product-sales-analysis-i](https://github.com/Mar9803/LeetCode-journey/tree/master/1068-product-sales-analysis-i) |
 | [1148-article-views-i](https://github.com/Mar9803/LeetCode-journey/tree/master/1148-article-views-i) |
 | [1193-monthly-transactions-i](https://github.com/Mar9803/LeetCode-journey/tree/master/1193-monthly-transactions-i) |
+| [1251-average-selling-price](https://github.com/Mar9803/LeetCode-journey/tree/master/1251-average-selling-price) |
 | [1280-students-and-examinations](https://github.com/Mar9803/LeetCode-journey/tree/master/1280-students-and-examinations) |
 | [1321-restaurant-growth](https://github.com/Mar9803/LeetCode-journey/tree/master/1321-restaurant-growth) |
 | [1378-replace-employee-id-with-the-unique-identifier](https://github.com/Mar9803/LeetCode-journey/tree/master/1378-replace-employee-id-with-the-unique-identifier) |
