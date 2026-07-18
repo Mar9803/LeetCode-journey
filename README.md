@@ -37,6 +37,7 @@ My Personal LeetCode log — auto-synced with LeetHub.
 | [0601-human-traffic-of-stadium](https://github.com/Mar9803/LeetCode-journey/tree/master/0601-human-traffic-of-stadium) |
 | [0620-not-boring-movies](https://github.com/Mar9803/LeetCode-journey/tree/master/0620-not-boring-movies) |
 | [1068-product-sales-analysis-i](https://github.com/Mar9803/LeetCode-journey/tree/master/1068-product-sales-analysis-i) |
+| [1075-project-employees-i](https://github.com/Mar9803/LeetCode-journey/tree/master/1075-project-employees-i) |
 | [1148-article-views-i](https://github.com/Mar9803/LeetCode-journey/tree/master/1148-article-views-i) |
 | [1193-monthly-transactions-i](https://github.com/Mar9803/LeetCode-journey/tree/master/1193-monthly-transactions-i) |
 | [1251-average-selling-price](https://github.com/Mar9803/LeetCode-journey/tree/master/1251-average-selling-price) |
