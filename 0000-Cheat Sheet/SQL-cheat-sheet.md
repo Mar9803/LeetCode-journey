@@ -1,14 +1,164 @@
-# 📚 SQL Cheat Sheet – Window Functions & Pattern Avanzati
+# 📚 SQL Cheat Sheet – "SQL50 leetCode"
+---
 
-Questo documento raccoglie i costrutti SQL più importanti emersi durante la risoluzione degli esercizi **LeetCode SQL**.
+### 🔹 SQL 18/50 — LeetCode 1633: Percentage of Users Attended a Contest -> [full report](../1633-percentage-of-users-attended-a-contest/note.md)
+
+### 🛠️ Cosa ho usato
+
+- `FROM Register`
+  - Selezione diretta dalla tabella dei fatti (*fact table*) per considerare esclusivamente le registrazioni effettive ed escludere a monte i dati non necessari.
+
+- ```sql
+  (SELECT COUNT(*) FROM Users)
+  ```
+  - Sottoquery scalare per calcolare dinamicamente il numero totale di utenti, utilizzato come denominatore per la percentuale.
+
+- ```sql
+  ORDER BY percentage DESC, contest_id ASC
+  ```
+  - Ordinamento multi-colonna: percentuale in ordine decrescente e, a parità di valore, `contest_id` in ordine crescente.
+
+### ⚠️ Errore vs Soluzione (La trappola della `LEFT JOIN` con gruppi `NULL`)
+
+### ❌ Errore
+
+```sql
+SELECT r.contest_id, ...
+FROM Users AS u
+LEFT JOIN Register AS r
+    ON r.user_id = u.user_id
+GROUP BY r.contest_id;
+```
+
+**Bug:** se esistono utenti che non si sono iscritti ad alcun contest, la `LEFT JOIN` li mantiene assegnando `NULL` alle colonne della tabella `Register`. Durante il `GROUP BY`, SQL crea un gruppo indesiderato con `contest_id = NULL`, causando il fallimento dei test case.
+
+### ✅ Soluzioni corrette
+
+Partire direttamente dalla tabella che contiene le relazioni effettive (`Register`) oppure utilizzare una `INNER JOIN`, così da escludere automaticamente i record senza corrispondenza.
+
+```sql
+SELECT contest_id, ...
+FROM Register
+GROUP BY contest_id;
+```
+
+### 💡 Regola d'oro per la scelta della tabella di partenza
+
+Prima di usare una `LEFT JOIN` per paura di "perdere dati", chiediti sempre se i record senza corrispondenza sono realmente necessari per l'output. Se il problema richiede metriche basate **solo su eventi realmente accaduti** (ad esempio iscrizioni, vendite, ordini o transazioni), è preferibile:
+
+- partire direttamente dalla tabella degli eventi (`Register`, `Orders`, `Sales`, ecc.);
+- oppure utilizzare una `INNER JOIN`.
+
+In questo modo il dataset rimane pulito e si evitano aggregazioni indesiderate su valori `NULL`.
+
+
+### 🔹 SQL 20/50 — LeetCode 1193: Monthly Transactions I -> [full report](../1193-monthly-transactions-i/note.md)
+
+### 🛠️ Cosa ho usato
+
+- `DATE_FORMAT(trans_date, '%Y-%m')` / `TO_CHAR(trans_date, 'YYYY-MM')`
+  - Tronca la data a livello mensile per il raggruppamento.
+
+- `GROUP BY month, country`
+  - Raggruppamento su più colonne per definire la granularità del report.
+
+- `SUM(CASE WHEN state = 'approved' THEN amount ELSE 0 END)`
+  - Aggregazione condizionale per sommare solo gli importi approvati.
+
+### ⚠️ Errore vs Soluzione (Contare Condizionato & Sommare)
+
+### ❌ Errore
+
+```sql
+COUNT(CASE WHEN ... ELSE 0 END)
+```
+
+**Bug:** `COUNT()` conta tutti i valori diversi da `NULL`, quindi conta anche gli `0`.
+
+### ✅ Soluzioni corrette
+
+Per contare le righe che soddisfano una condizione:
+
+```sql
+COUNT(CASE WHEN ... THEN 1 END)
+```
+
+oppure
+
+```sql
+SUM(CASE WHEN ... THEN 1 ELSE 0 END)
+```
 
 ---
 
-# 🗂️ Common Table Expression (CTE)
+### 💡 Regola d'oro per gli importi: 
 
-Permette di creare una tabella temporanea virtuale.
+Per **valore economico totale** (sommare gli importi) e **non** il numero di righe:
 
-## Sintassi
+```sql
+SUM(CASE WHEN ... THEN amount ELSE 0 END)
+```
+---
+
+## 🔹 SQL 21/50 — LeetCode 1174: Immediate Food Delivery II -> [Full Report](../1174-immediate-food-delivery-ii/note.md)
+
+## 🛠️ Cosa ho usato
+
+- `WITH step0 AS (...)`
+  - CTE (Common Table Expression) per isolare ed estrarre la data del primo ordine per ogni cliente.
+
+- ```sql
+  INNER JOIN ... 
+      ON d1.customer_id = step0.customer_id
+     AND d1.order_date = step0.min_order_date
+  ```
+  - JOIN con doppia condizione per considerare esclusivamente il primo ordine di ciascun cliente.
+
+- ```sql
+  ROUND(SUM(immediate) / SUM(first_order) * 100, 2)
+  ```
+  - Calcolo della percentuale complessiva e arrotondamento a due cifre decimali.
+
+## ⚠️ Errore vs Soluzione (Filtro sulle date nelle JOIN)
+
+### ❌ Errore
+
+```sql
+INNER JOIN step0
+    ON d1.customer_id = step0.customer_id
+```
+
+**Bug:** la query restituisce un risultato sovrastimato (ad esempio **75%** invece di **50%**) perché la `JOIN` associa il cliente a **tutti** i suoi ordini storici, includendo anche quelli successivi al primo.
+
+### ✅ Soluzione corretta
+
+Vincolare la `JOIN` sia sull'identificativo del cliente sia sulla data minima precedentemente calcolata:
+
+```sql
+INNER JOIN step0
+    ON d1.customer_id = step0.customer_id
+   AND d1.order_date = step0.min_order_date
+```
+
+## 💡 Regola d'oro: NO annidare funzioni aggregate SUM(CASE WHEN x = MIN(x) ...)
+
+```sql
+SUM(CASE WHEN x = MIN(x) THEN 1 ELSE 0 END)
+```
+Per superare questo limite:
+
+1. Calcola prima l'aggregazione (`MIN`, `MAX`, ecc.) in una **CTE** o in una sottoquery.
+2. Utilizza poi il risultato nel `SELECT` principale per eseguire `SUM()`, `COUNT()` o altre aggregazioni.
+
+---
+
+# info generali: sintatti, strutture, patterns
+
+## 🗂️ Common Table Expression (CTE): Permette di creare una tabella temporanea virtuale.
+
+
+- dividere problemi complessi in più passaggi.
+- ATT 💡 `WITH` si scrive una sola volta.
 
 ```sql
 WITH nome_cte AS (
@@ -33,15 +183,6 @@ step3 AS (
 SELECT *
 FROM step3;
 ```
-
-### Quando usarla
-
-- dividere problemi complessi in più passaggi
-- migliorare la leggibilità
-- riutilizzare risultati intermedi
-
-> 💡 `WITH` si scrive una sola volta.
-
 ---
 
 # 📊 GROUP BY
